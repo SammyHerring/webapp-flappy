@@ -9,7 +9,7 @@ var stateActions = { preload: preload, create: create, update: update };
 // - actions on the game state (or null for nothing)
 var game = new Phaser.Game(790, 400, Phaser.AUTO, 'game', stateActions);
 
-//Global Variables
+//Global Variables and constants
 var score1 = 0;
 var score2 = 0;
 var labelScore1;
@@ -17,6 +17,14 @@ var labelScore2;
 var player1;
 var player2;
 var pipes = [];
+var p1dead = false;
+var p2dead = false;
+var gapSize = 100;
+var gapMargin = 50;
+var blockHeight = 50;
+var height = 400;
+var share = false;
+var end = false;
 
 /*
  * Loads all resources for the game and gives them names.
@@ -64,16 +72,18 @@ function create() {
     player1.x = 150;
     player1.y = 200;
     game.physics.arcade.enable(player1);
-    player1.body.velocity.x = 100;
-    player1.body.gravity.y = 100;
+    player1.body.velocity.y = 25;
+    player1.body.gravity.y = 500;
+
 
     //Player2 Elements
     player2 = game.add.sprite(100, 200, "playerImg2");
     player2.x = 150;
     player2.y = 300;
     game.physics.arcade.enable(player2);
-    player2.body.velocity.x = 100;
-    player2.body.gravity.y = 100;
+    player2.body.velocity.y = 25;
+    player2.body.gravity.y = 500;
+
 
     //Pipes
 
@@ -83,25 +93,44 @@ game.time.events.loop(
     generatePipe
 );
 
-      generatePipe();
+      //generatePipe();
+}
+
+function p1kill() {
+  player1.kill();
+  p1dead = true;
+}
+
+function p2kill() {
+  player2.kill();
+  p2dead = true;
 }
 
 function update() {
-    game.physics.arcade.overlap(
-      player1,
-		  pipes,
-		  gameOver);
+    game.physics.arcade.overlap(player1, pipes, p1kill);
+    game.physics.arcade.overlap(player2, pipes, p2kill);
 
       if(player1.body.y < 0 || player1.body.y > 400){
-        gameOver();
+        p1kill();
       }
       if(player2.body.y < 0 || player2.body.y > 400){
+        p2kill();
+      }
+      if (p1dead === true && p2dead === true){
         gameOver();
       }
 }
 
 function gameOver() {
-    location.reload();
+  p1dead = false;
+  p2dead = false;
+  console.log("waazaaaaas");
+  game.paused = true;
+  //registerScore(score1, score2);
+  //location.reload()
+  var end = true;
+
+
 }
 
  //START Custom Funcions
@@ -116,13 +145,17 @@ function spaceHandler() {
 }
 
 function changeScore1() {
-	score1 = score1 + 1;
-  labelScore1.setText(score1.toString());
+  if (p1dead === false){
+    score1 = score1 + 1;
+    labelScore1.setText(score1.toString());
+}
 }
 
 function changeScore2() {
-	score2 = score2 + 1;
-  labelScore2.setText(score.toString());
+  if (p2dead === false){
+	   score2 = score2 + 1;
+     labelScore2.setText(score2.toString());
+}
 }
 
 function moveRight1() {
@@ -169,6 +202,7 @@ function playerJump2() {
 
 //Pipes
 function generatePipe() {
+  if (end === false) {
   var gap = game.rnd.integerInRange(1 ,5);
     for (var count = 0; count < 8; count++) {
         if (count != gap && count != gap+1) {
@@ -177,7 +211,7 @@ function generatePipe() {
     }
     changeScore1();
     changeScore2();
-}
+}}
 
 function addPipeBlock(x, y) {
   var pipeBlock = game.add.sprite(x,y,"pipeBlock");
