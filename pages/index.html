@@ -1,31 +1,72 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Cambridge Coding Academy Flappy Bird</title>
-    <link rel="stylesheet" href="../assets/cca.css"> 1
-    <script type="text/javascript" src="../lib/phaser.min.js"></script> 2
-    <script type="text/javascript" src="../js/flappy.js"></script>
+  <head>
+    <title>Flappy Birdy</title>
+    <link rel="stylesheet" href="../assets/style.css"/>
+    <link rel="stylesheet" href="../lib/bootstrap.css"/>
 </head>
-
-<body>
-    <div id="header"> 3
-        <h1 id="flappy">Flappy Bird</h1>
-        <div id="cca">
-        <a href="http://cambridgecoding.com">
-            <img src="http://cambridgecoding.com/assets/images/logos/logo_cca.png"
-                id="logo"> 4
-            <p>My very own flappy thing</p>
-        </a>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Flappy Woz.</h1>
+        <p>The place where Woz and Jobs go head to head. Who will win?</p>
+      </div>
+    <div class="row">
+        <div class="col-xs-9 centered">
+            <p id="gameLink">
+                <!-- <a href="game.html">
+                  <img src="../assets/screenshot.png" class="img-responsive" />
+                </a> -->
+                <div id="game"></div>
+            </p>
         </div>
-    </div>
-
-    <div id="game"> </div>
-
-    <div id="footer">
-        <p>Cambridge Coding Academy</p>
-    </div>
-
-</body>
-
+        <div class="col-xs-6">
+              <button type="button" class="btn btn-default" id="scoresbtn">Scores</button>
+              <button type="button" class="btn btn-default" id="creditsbtn">Credits</button>
+              <button type="button" class="btn btn-default" id="helpbtn">Help</button>
+              <button type="button" id="reset" onclick="reset()" class="btn btn-default">Reset</button>
+          </div>
+          <div class="col-xs-6">
+              <form>
+                <div class="form-group row">
+                  <label for="playerName1" class="col-sm-2 col-form-label">Player 1</label>
+                <div class="col-sm-10">
+                  <input type="name" class="form-control" id="p1user" placeholder="Jobs">
+                </div>
+                </div>
+                <div class="form-group row">
+                  <label for="playerName2" class="col-sm-2 col-form-label">Player 2</label>
+                <div class="col-sm-10">
+                  <input type="name" class="form-control" id="p2user" placeholder="Woz">
+                </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-2">Share?</label>
+                <div class="col-sm-10">
+                <div class="form-check">
+                  <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"> Share on Twitter
+                  </label>
+                  <div class="form-group row">
+                  <div class="offset-sm-2 col-sm-10">
+                    <button type="button" onclick="getData()" class="btn btn-primary">Send</button>
+                  </div>
+                </div>
+              </form>
+                </div>
+                </div>
+                </div>
+                </div>
+         <div class="col-xs-6" id="content">
+        </div>
+        <div id="scoreBoard" class="col-xs-6"></div>
+    </div> <!-- End Container Tag -->
+  <!-- START JQuery Scrips -->
+  <script type="text/javascript" src="../lib/jquery.js"></script>
+  <script type="text/javascript" src="../js/interactivity.js"></script>
+  <script type="text/javascript" src="../lib/phaser.min.js"></script>
+  <script type="text/javascript" src="../js/flappy.js"></script>
+  <!-- END JQuery Scripts -->
+  </body>
 </html>
