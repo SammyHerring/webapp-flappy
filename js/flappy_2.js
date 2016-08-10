@@ -56,10 +56,10 @@ function preload() {
  */
 function create() {
 
-  game.stage.setBackgroundColor("#FFFFFF");
+  game.stage.setBackgroundColor("#0099CB");
   var started = false;
 
-  splashDisplay = game.add.text(100,200, "Press ENTER to start, SPACEBAR to jump");
+  splashDisplay = game.add.text(100,200, "Press ENTER to start, SPACEBAR to jump",  {font: "35px Helvetica", fill: "#FFFFFF"});
   game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(start);
 } //End of CREATE Func
 
@@ -72,7 +72,7 @@ function start() {
   /// START OF MAIN GAME SCRIPT ///
 
   //Game GFX and Physics
-  game.stage.setBackgroundColor("#71C5CF");
+  game.stage.setBackgroundColor("#0099CB");
   game.add.text(20, 20, "FlappyWoz", {font: "35px Helvetica", fill: "#FFFFFF"});
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -91,8 +91,6 @@ function start() {
   game.input.keyboard.addKey(Phaser.Keyboard.S).onDown.add(moveDown2);
   game.input.keyboard.addKey(Phaser.Keyboard.D).onDown.add(moveRight2);
   game.input.keyboard.addKey(Phaser.Keyboard.X).onDown.add(playerJump2);
-
-  var started = true;
 
   //HUD
   game.add.text(20, 60, "Player 1: ",  {font: "30px Helvetica", fill: "#FFFFFF"});
@@ -116,6 +114,8 @@ function start() {
   player2.body.velocity.y = 25;
   player2.body.gravity.y = 500;
 
+  started = true;
+
   //Pipes
   var pipeInterval = 1.75 * Phaser.Timer.SECOND;
   game.time.events.loop(
@@ -128,6 +128,7 @@ function start() {
 }
 
 function p1kill() {
+  console.log("player1 kill");
   player1.kill();
   p1dead = true;
 }
