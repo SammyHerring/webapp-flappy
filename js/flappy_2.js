@@ -15,6 +15,10 @@ var body;
 var splashDisplay;
 
 var pipes = [];
+var balloons = [];
+var weights = [];
+var androids = [];
+
 var p1dead = false;
 var p2dead = false;
 
@@ -25,7 +29,7 @@ var blockHeight = 50;
 var height = 400;
 var width = 790;
 
-var gameGravity = 200;
+var gameGravity = 500;
 var gameSpeed = 200;
 var jumpPower = 200;
 
@@ -49,6 +53,9 @@ function preload() {
   game.load.image("pipeEnd","../assets/pipe2-end.png");
   game.load.audio("Mario", "../assets/Mario.wav");
   game.load.image("bg", "../assets/bg.png");
+  game.load.image("balloons", "../assets/balloons.png");
+  game.load.image("weight", "../assets/weight.png");
+  game.load.image("android", "../assets/android.png");
 }
 
 /*
@@ -104,7 +111,7 @@ function start() {
   player1.y = 200;
   game.physics.arcade.enable(player1);
   player1.body.velocity.y = 25;
-  player1.body.gravity.y = 500;
+  player1.body.gravity.y = gameGravity;
 
   //Player2 Elements
   player2 = game.add.sprite(100, 200, "playerImg2");
@@ -112,7 +119,7 @@ function start() {
   player2.y = 300;
   game.physics.arcade.enable(player2);
   player2.body.velocity.y = 25;
-  player2.body.gravity.y = 500;
+  player2.body.gravity.y = gameGravity;
 
   started = true;
 
@@ -120,7 +127,7 @@ function start() {
   var pipeInterval = 1.75 * Phaser.Timer.SECOND;
   game.time.events.loop(
   pipeInterval,
-  generatePipe
+  generate
   );
 
   /// END OF MAIN GAME SCRIPT ///
@@ -148,6 +155,13 @@ function update() {
     game.physics.arcade.overlap(player1, pipes, p1kill);
     game.physics.arcade.overlap(player2, pipes, p2kill);
 
+    checkBonus(balloons, -25);
+    checkBonus(weights, 100);
+    checkBonus(androids, 1000);
+
+      //player1.rotation = Math.atan(player1.body.velocity.y / gameSpeed);
+      //player2.rotation = Math.atan(player2.body.velocity.y / gameSpeed);
+
       if(player1.body.y < 0 || player1.body.y > 400){
         p1kill();
       }
@@ -164,6 +178,9 @@ function update() {
 function gameOver() {
   p1dead = false;
   p2dead = false;
+  gameGravity = 500;
+  explode();
+  //time.sleep(500);
   game.paused = true;
   //registerScore(score1, score2);
   //location.reload()
@@ -261,7 +278,72 @@ function addPipeEnd(x, y) {
     endBlock.body.velocity.x = - gameSpeed;
 }
 
+//Balloons
+function generate() {
+    var diceRoll = game.rnd.integerInRange(1, 10);
+    if(diceRoll==1) {
+        generateBalloons();
+    } else if(diceRoll==2) {
+        generateWeight();
+    } else if(diceRoll==3) {
+        generateAndroid();
+    } else {
+        generatePipe();
+    }
+}
+
+function generateBalloons(){
+    var bonus = game.add.sprite(width, height, "balloons");
+    balloons.push(bonus);
+    game.physics.arcade.enable(bonus);
+    bonus.body.velocity.x = - 200;
+    bonus.body.velocity.y = - game.rnd.integerInRange(60, 100);
+}
+
+function generateWeight(){
+    var bonus = game.add.sprite(width, 0, "weight");
+    weights.push(bonus);
+    game.physics.arcade.enable(bonus);
+    bonus.body.velocity.x = -gameSpeed;
+    bonus.body.velocity.y = game.rnd.integerInRange(60,100);
+}
+
+function generateAndroid(){
+    var bonus = game.add.sprite(width, 0, "android");
+    androids.push(bonus);
+    game.physics.arcade.enable(bonus);
+    bonus.body.velocity.x = -gameSpeed;
+    bonus.body.velocity.y = game.rnd.integerInRange(60,100);
+}
+
+function checkBonus(bonusArray, bonusEffect) {
+  if (bonusArray === 'androids') {
+    p1kill()
+    p2kill()
+  } else {
+    for(var i=bonusArray.length - 1; i>=0; i--){
+        game.physics.arcade.overlap(player1,bonusArray[i], function(){
+            bonusArray[i].destroy();
+            bonusArray.splice(i,1);
+            changeGravity(bonusEffect);
+        });
+    }
+    for(var i=bonusArray.length - 1; i>=0; i--){
+        game.physics.arcade.overlap(player2,bonusArray[i], function(){
+            bonusArray[i].destroy();
+            bonusArray.splice(i,1);
+            changeGravity(bonusEffect);
+        });
+    }
+}}
+
 function Mario() {
   game.sound.play("Mario");
+}
+
+function changeGravity(g) {
+    gameGravity += g;
+    player1.body.gravity.y = gameGravity;
+    player2.body.gravity.y = gameGravity;
 }
  //END Custom Functions
